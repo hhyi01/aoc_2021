@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 )
@@ -27,7 +28,7 @@ func day02Part1CalcPosition(direction string, units int, horizontal int, depth i
 	case "up":
 		depth -= units
 	default:
-		fmt.Errorf("unknown direction")
+		log.Fatalf("unknown direction %q", direction)
 	}
 	return horizontal, depth
 }
@@ -54,7 +55,7 @@ func day02Part2CalcPosition(direction string, units int, horizontal int, depth i
 	case "up":
 		aim -= units
 	default:
-		fmt.Errorf("unknown direction")
+		log.Fatalf("unknown direction %q", direction)
 	}
 	return horizontal, depth, aim
 }
