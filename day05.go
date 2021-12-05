@@ -73,10 +73,10 @@ func markVentsPart1(puzzleInput []string, grid [][]int) [][]int {
 func markVentsPart2(puzzleInput []string, grid [][]int) [][]int {
 	for _, v := range puzzleInput {
 		x1, x2, y1, y2 := getXandYValues(v)
-			minX := calcMin(x1, x2)
-			maxX := calcMax(x1, x2)
-			minY := calcMin(y1, y2)
-			maxY := calcMax(y1, y2)
+		minX := calcMin(x1, x2)
+		maxX := calcMax(x1, x2)
+		minY := calcMin(y1, y2)
+		maxY := calcMax(y1, y2)
 		if x1 != x2 && y1 == y2 {
 			for i := minX; i <= maxX; i++ {
 				grid[y1][i] += 1
