@@ -7,26 +7,16 @@ import (
 	"strings"
 )
 
-func day07Part1(filePath string)  {
+func day07Part1and2(filePath string, part string)  {
+	// part expected to be "Part 1" or "Part 2"
 	puzzleInput := readFileLines(filePath)
 	positions := strings.Split(puzzleInput[0], ",")
 	minPos := calcMinPosition(positions)
 	maxPos := calcMaxPosition(positions)
-	fuelCalcs := calcFuelOnPosition(positions, minPos, maxPos, "Part 1")
+	fuelCalcs := calcFuelOnPosition(positions, minPos, maxPos, part)
 	leastFuelPos, fuelConsumed := calcMinFuel(fuelCalcs)
 	fmt.Println("Horizontal position using least fuel =", leastFuelPos)
-	fmt.Println("Part 1 - fuel spent to align to horizontal position =", fuelConsumed)
-}
-
-func day07Part2(filePath string)  {
-	puzzleInput := readFileLines(filePath)
-	positions := strings.Split(puzzleInput[0], ",")
-	minPos := calcMinPosition(positions)
-	maxPos := calcMaxPosition(positions)
-	fuelCalcs := calcFuelOnPosition(positions, minPos, maxPos, "Part 2")
-	leastFuelPos, fuelConsumed := calcMinFuel(fuelCalcs)
-	fmt.Println("Horizontal position using least fuel =", leastFuelPos)
-	fmt.Println("Part 2 - fuel spent to align to horizontal position =", fuelConsumed)
+	fmt.Printf("%s - fuel spent to align to horizontal position = %d", part, fuelConsumed)
 }
 
 func calcFuelOnPosition(positions []string, minPos int, maxPos int, calcType string) map[int]int {
