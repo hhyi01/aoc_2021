@@ -12,25 +12,7 @@ func day07Part1(filePath string)  {
 	positions := strings.Split(puzzleInput[0], ",")
 	minPos := calcMinPosition(positions)
 	maxPos := calcMaxPosition(positions)
-	fuelCalcs := make(map[int]int)
-	for pos := minPos; pos <= maxPos; pos++ {
-		totalFuel := 0
-		for _, v := range positions {
-			crabSubPos, _ := strconv.Atoi(v)
-			_, found := fuelCalcs[pos]
-			if !found {
-				fuel := pos - crabSubPos
-				if fuel < 0 {
-					fuel = fuel * -1
-				}
-				totalFuel += fuel
-			}
-		}
-		_, found := fuelCalcs[pos]
-		if !found {
-			fuelCalcs[pos] = totalFuel
-		}
-	}
+	fuelCalcs := calcFuelOnPosition(positions, minPos, maxPos, "Part 1")
 	leastFuelPos, fuelConsumed := calcMinFuel(fuelCalcs)
 	fmt.Println("Horizontal position using least fuel =", leastFuelPos)
 	fmt.Println("Part 1 - fuel spent to align to horizontal position =", fuelConsumed)
@@ -41,6 +23,13 @@ func day07Part2(filePath string)  {
 	positions := strings.Split(puzzleInput[0], ",")
 	minPos := calcMinPosition(positions)
 	maxPos := calcMaxPosition(positions)
+	fuelCalcs := calcFuelOnPosition(positions, minPos, maxPos, "Part 2")
+	leastFuelPos, fuelConsumed := calcMinFuel(fuelCalcs)
+	fmt.Println("Horizontal position using least fuel =", leastFuelPos)
+	fmt.Println("Part 2 - fuel spent to align to horizontal position =", fuelConsumed)
+}
+
+func calcFuelOnPosition(positions []string, minPos int, maxPos int, calcType string) map[int]int {
 	fuelCalcs := make(map[int]int)
 	for pos := minPos; pos <= maxPos; pos++ {
 		totalFuel := 0
@@ -52,8 +41,12 @@ func day07Part2(filePath string)  {
 				if fuel < 0 {
 					fuel = fuel * -1
 				}
-				crabFuelCost := crabCalcFuel(1, fuel, fuel)
-				totalFuel += crabFuelCost
+				if calcType == "Part 1" {
+					totalFuel += fuel
+				} else {
+					crabFuelCost := crabCalcFuel(1, fuel, fuel)
+					totalFuel += crabFuelCost
+				}
 			}
 		}
 		_, found := fuelCalcs[pos]
@@ -61,9 +54,7 @@ func day07Part2(filePath string)  {
 			fuelCalcs[pos] = totalFuel
 		}
 	}
-	leastFuelPos, fuelConsumed := calcMinFuel(fuelCalcs)
-	fmt.Println("Horizontal position using least fuel =", leastFuelPos)
-	fmt.Println("Part 2 - fuel spent to align to horizontal position =", fuelConsumed)
+	return fuelCalcs
 }
 
 func calcMinPosition(crabPositions []string) int {
