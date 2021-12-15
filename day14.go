@@ -10,7 +10,7 @@ func day14Part1(filePath string) {
 	puzzleInput := readFileLines(filePath)
 	polymerTemplate, rules := parseInput(puzzleInput)
 	step := 0
-	steps := 4
+	steps := 10
 	polymer := polymerTemplate
 	for {
 		var nextPolymer []string
@@ -32,7 +32,7 @@ func day14Part1(filePath string) {
 	}
 	fmt.Println(polymer)
 	leastCommon, mostCommon := findMinMax(polymer)
-	fmt.Println("Part 1 - quantity of most common element less least common =", mostCommon - leastCommon)
+	fmt.Printf("Part 1 - quantity of most common element less least common after %d steps = %d", steps, mostCommon-leastCommon)
 }
 
 func day14Part2(filePath string)  {
@@ -50,7 +50,7 @@ func day14Part2(filePath string)  {
 		tempCounts[pair] = 0
 	}
 	step := 0
-	steps := 1
+	steps := 40
 	for {
 		for pair, count := range pairCounts {
 			if count > 0 {
@@ -61,10 +61,11 @@ func day14Part2(filePath string)  {
 				tempCounts[newPair2] += count
 			}
 		}
+		// set counts to pairs counted this step
 		for k, v := range tempCounts {
 			pairCounts[k] = v
 		}
-		// reset counts to 0
+		// reset temp counts to 0
 		for prop := range tempCounts {
 			tempCounts[prop] = 0
 		}
@@ -73,26 +74,25 @@ func day14Part2(filePath string)  {
 			break
 		}
 	}
-	fmt.Println(pairCounts)
 	elementCounts := countElementsBasedOnPairs(pairCounts)
 	fmt.Println(elementCounts)
-	ans := "NCNBCHB"
-	charCounts := countString(ans)
-	fmt.Println(charCounts)
-	fmt.Println("Part 2")
+	leastCommon, mostCommon := findMinMaxPart2(elementCounts)
+	fmt.Printf("Part 2 - quantity of most common element less least common after %d steps = %d", steps, mostCommon-leastCommon)
 }
 
-func countString(str string) map[string]int {
-	charCounts := make(map[string]int)
-	for _, v := range str {
-		_, found := charCounts[string(v)]
-		if found {
-			charCounts[string(v)] += 1
+func findMinMaxPart2(elementCounts map[string]int) (int, int) {
+	minE := math.MaxInt
+	maxE := math.MinInt
+	for _, v := range elementCounts {
+		if v > maxE {
+			maxE = v
 		} else {
-			charCounts[string(v)] = 1
+			if v < minE {
+				minE = v
+			}
 		}
 	}
-	return charCounts
+	return minE, maxE
 }
 
 func countElementsBasedOnPairs(pairCounts map[string]int) map[string]int {
@@ -114,6 +114,13 @@ func countElementsBasedOnPairs(pairCounts map[string]int) map[string]int {
 			elementCounts[e2] = v
 		}
 	}
+	for c, count := range elementCounts {
+		if count % 2 == 1 {
+			elementCounts[c] = (count+1)/2
+		} else {
+			elementCounts[c] = count/2
+		}
+	}
 	return elementCounts
 }
 
@@ -129,7 +136,6 @@ func findMinMax(polymer []string) (int, int) {
 			countE[e] = 1
 		}
 	}
-	fmt.Println(countE)
 	for _, v := range countE {
 		if v > maxE {
 			maxE = v
