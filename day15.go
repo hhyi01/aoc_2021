@@ -21,10 +21,53 @@ func day15Part1(filePath string) {
 func day15Part2(filePath string) {
 	puzzleInput := readFileLines(filePath)
 	fullGrid := setGrid(len(puzzleInput)*5-1, len(puzzleInput[0])*5-1)
+	fullMap := extendGrid(puzzleInput, fullGrid)
+	desty := strconv.Itoa(len(fullMap)-1)
+	destx := strconv.Itoa(len(fullMap[0])-1)
+	dest := desty + "," + destx
+	fmt.Println(dest)
+	_, lowestRiskPath := findPathsThruChitons(fullMap)
+	//path, riskTotal := calcRiskLevel(previousSquares, lowestRiskPath, "0,0", dest)
+	fmt.Println("Part 2 - lowest total risk of any path from top left to bottom right =", lowestRiskPath[dest])
 }
 
-func createGrids(puzzleInput []string) [][][]int {
-
+func extendGrid(puzzleInput []string, fullGrid [][]int) []string {
+	var fullMap []string
+	for y, line := range fullGrid {
+		for x := range line {
+			//fmt.Println("current y and x:", y, x)
+			if y <= len(puzzleInput)-1 && x <= len(puzzleInput[0])-1 {
+				risk, _ := strconv.Atoi(string(puzzleInput[y][x]))
+				fullGrid[y][x] = risk
+			} else {
+				prevY := y
+				prevX := x
+				if y >= len(puzzleInput) {
+					prevY = y - len(puzzleInput)
+				}
+				if y <= len(puzzleInput)-1 && x >= len(puzzleInput[0]) {
+					prevX = x - len(puzzleInput[0])
+				}
+				newVal := fullGrid[prevY][prevX]
+				if newVal == 9 {
+					newVal = 1
+				} else {
+					newVal += 1
+				}
+				fullGrid[y][x] = newVal
+			}
+		}
+	}
+	for _, line := range fullGrid {
+		var lineStr []string
+		for _, v := range line {
+			vStr := strconv.Itoa(v)
+			lineStr = append(lineStr, vStr)
+		}
+		strLine := strings.Join(lineStr, "")
+		fullMap = append(fullMap, strLine)
+	}
+	return fullMap
 }
 
 func findPathsThruChitons(puzzleInput []string) (map[string]string, map[string]int) {
@@ -65,6 +108,9 @@ func findPathsThruChitons(puzzleInput []string) (map[string]string, map[string]i
 			}
 		}
 		delete(unvisited, currSquare)
+		if len(unvisited) % 10000 == 0 {
+			fmt.Println("Unvisted remaining:", len(unvisited))
+		}
 		if len(unvisited) == 0 {
 			break
 		}
